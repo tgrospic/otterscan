@@ -282,7 +282,7 @@ const ContractVerificationSteps: React.FC<ContractVerificationStepsProps> = ({
       const myChain = new SourcifyChain({
         name: "Ethereum Mainnet",
         chainId: Number(provider._network.chainId),
-        rpc: [rpcUrl],
+        rpcs: [{ rpc: rpcUrl }],
         supported: true,
       });
 

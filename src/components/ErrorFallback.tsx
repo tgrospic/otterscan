@@ -25,9 +25,12 @@ const ErrorFallback: React.FC<FallbackProps> = ({ error }) => (
         </div>
 
         <pre className="bg-red-100 text-xs mt-2 rounded-sm p-2 border border-red-500 mb-2">
-          {document.location.pathname + "\n\n" + error.toString() + "\n\n"}
+          {document.location.pathname +
+            "\n\n" +
+            (error as Error).toString() +
+            "\n\n"}
 
-          {error.stack}
+          {(error as Error).stack}
         </pre>
       </div>
     </ContentFrame>

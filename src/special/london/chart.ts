@@ -135,12 +135,12 @@ export const gasChartData = (blocks: ExtendedBlock[]): ChartData<"line"> => ({
       segment: {
         backgroundColor: (ctx, x) =>
           interpolateColor(
-            ctx.p1.parsed.y,
+            ctx.p1.parsed.y ?? 0,
             Number(blocks[ctx.p1DataIndex].gasLimit),
           ) + "70",
         borderColor: (ctx) =>
           interpolateColor(
-            ctx.p1.parsed.y,
+            ctx.p1.parsed.y ?? 0,
             Number(blocks[ctx.p1DataIndex].gasLimit),
           ),
       },
