@@ -68,7 +68,7 @@ jobs:
         run: tailscale status
 
       - name: Run Cypress tests on mainnet
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           start: pnpm start
           wait-on: "http://localhost:5173"
@@ -80,7 +80,7 @@ jobs:
           VITE_ERIGON_URL: ${{secrets.E2E_ERIGON_URL}}
           CYPRESS_RECORD_KEY: ${{secrets.E2E_CYPRESS_RECORD_KEY}}
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: Cypress Mainnet Screenshots
@@ -112,7 +112,7 @@ jobs:
       - name: Download Erigon
         run: git clone --branch v3.0.4 --single-branch https://github.com/erigontech/erigon.git
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version-file: "erigon/go.mod"
           cache-dependency-path: "erigon/go.sum"
@@ -127,7 +127,7 @@ jobs:
           OTTERSCAN_CONFIG=$(echo $OTTERSCAN_CONFIG)
           echo "config=$OTTERSCAN_CONFIG" >> $GITHUB_OUTPUT
       - name: Run Cypress tests on devnet
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           start: |
             sh ./scripts/run-erigon-devnet-e2e-tests.sh
@@ -143,7 +143,7 @@ jobs:
           CYPRESS_DEVNET_ERIGON_URL: "http://127.0.0.1:8545"
           CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: Cypress Devnet Screenshots
@@ -182,7 +182,7 @@ jobs:
           OTTERSCAN_CONFIG=$(echo $OTTERSCAN_CONFIG)
           echo "config=$OTTERSCAN_CONFIG" >> $GITHUB_OUTPUT
       - name: Run Cypress tests on Anvil devnet
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@v7
         with:
           start: |
             sh ./scripts/run-anvil-devnet.sh
@@ -200,7 +200,7 @@ jobs:
           CYPRESS_DEVNET_SOURCIFY_SOURCE: "http://127.0.0.1:7077"
           CYPRESS_DEVNET_ACCOUNT_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
       - name: Upload screenshots/videos from failing tests
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: Cypress Devnet Screenshots
