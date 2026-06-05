@@ -33,7 +33,7 @@ jobs:
         env:
           VITE_CONFIG_JSON: ${{ secrets.viteConfigJson }}
       - name: Publish
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.apiToken }}
           accountId: ${{ secrets.accountId }}
