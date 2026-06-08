@@ -9,7 +9,7 @@ describe("Navigation", () => {
       .each((index) => {
         cy.sendTx({
           to: targetAddr,
-          value: 1_000_000_000n * BigInt(index + 1),
+          value: 1_000_000_000n * BigInt(+index + 1),
         });
       })
       .then(() => {

@@ -10,11 +10,6 @@ npm run test
 ## End-to-end tests
 Otterscan uses Cypress as its end-to-end testing framework. You can run the end-to-end tests locally. First, ensure you are running an Otterscan instance on `http://localhost:5173`. Then you can run one of the following commands:
 
-### Ethereum mainnet
-```sh
-npm run cy:run-mainnet
-```
-
 ### Erigon devnet
 Running the devnet tests requires a custom Otterscan configuration. You can use this command to start Otterscan with the devnet configuration:
 ```sh
@@ -43,16 +38,15 @@ CYPRESS_DEVNET_ACCOUNT_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae7
 ```
 
 ## Running GitHub Actions workflows locally
-Otterscan uses GitHub Actions as its CI platform and runs several jobs when pull requests are opened or commits are made to the `develop` and `main` branches.
+Otterscan uses GitHub Actions as its CI platform. Pull requests and pushes run
+the local devnet/anvil end-to-end jobs.
 
 You can test these locally using [act](https://github.com/nektos/act) with the following command:
 ```sh
-# Ethereum Mainnet Erigon RPC URL
-E2E_ERIGON_URL=
 # Cypress Cloud record key, if you have one
 E2E_CYPRESS_RECORD_KEY=
 
-act --container-architecture linux/amd64 pull_request -s E2E_ERIGON_URL=$E2E_ERIGON_URL -s E2E_CYPRESS_RECORD_KEY=$E2E_CYPRESS_RECORD_KEY --artifact-server-path /tmp/artifacts
+act --container-architecture linux/amd64 pull_request -s E2E_CYPRESS_RECORD_KEY=$E2E_CYPRESS_RECORD_KEY --artifact-server-path /tmp/artifacts
 ```
 
 Screenshots of failed tests will be "uploaded" to `/tmp/artifacts`.

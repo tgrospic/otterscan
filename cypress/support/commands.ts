@@ -20,12 +20,15 @@ Cypress.Commands.add(
 );
 
 function getProvider(): ethers.JsonRpcApiProvider {
-  return new ethers.JsonRpcProvider(
+  const provider = new ethers.JsonRpcProvider(
     Cypress.env("DEVNET_ERIGON_URL") || "http://127.0.0.1:8545",
     undefined,
     // Speed up polling time from 4000ms => 100ms
     { polling: true, pollingInterval: 100 },
   );
+  // Temporary fix for https://github.com/ethers-io/ethers.js/issues/4713
+  provider.pollingInterval = 100;
+  return provider;
 }
 
 function getDefaultPrivateKey(): string {
@@ -42,14 +45,15 @@ Cypress.Commands.add(
     return cy.wrap(
       (async () => {
         const provider = getProvider();
-        // Temporary fix for https://github.com/ethers-io/ethers.js/issues/4713
-        provider.pollingInterval = 100;
         const wallet = new ethers.Wallet(
           privateKey || getDefaultPrivateKey(),
           provider,
         );
         const tx = await wallet.sendTransaction(txReq);
         const txReceipt = await tx.wait();
+        if (txReceipt === null) {
+          throw new Error(`Transaction ${tx.hash} was not mined`);
+        }
         return { tx, txReceipt, wallet };
       })(),
       { timeout: 15_000 },
@@ -88,6 +92,7 @@ Cypress.Commands.add("ensurePriceOracle", () => {
               .sendTransaction({
                 to: deployerWallet.address,
                 value: ethers.parseEther("0.1"),
+                gasLimit: 21_000,
               })
               .then((tx) => tx.wait());
 
@@ -95,8 +100,9 @@ Cypress.Commands.add("ensurePriceOracle", () => {
             const txResponse = await deployerWallet.sendTransaction({
               data: priceOracleBytecode.trim(),
               nonce: deployerTxCount,
+              gasLimit: 3_000_000,
             });
-            const txReceipt = await txResponse.wait();
+            await txResponse.wait();
 
             // Set price to 1234.5678
             const priceOracle = new ethers.Contract(
@@ -107,6 +113,7 @@ Cypress.Commands.add("ensurePriceOracle", () => {
             await priceOracle
               .setRoundData(ethers.parseUnits("1234.5678", 18), {
                 nonce: deployerTxCount + 1,
+                gasLimit: 100_000,
               })
               .then((tx) => tx.wait());
           }
@@ -120,11 +127,15 @@ declare global {
   namespace Cypress {
     interface Chainable {
       interceptDirectory(baseUrl: string, directory: string): Chainable<void>;
-      sendTx(txReq: TransactionRequest): Chainable<{
+      sendTx(
+        txReq: TransactionRequest,
+        privateKey?: string,
+      ): Chainable<{
         tx: TransactionResponse;
         txReceipt: TransactionReceipt;
         wallet: Wallet;
       }>;
+      ensurePriceOracle(): Chainable<void>;
     }
   }
 }

@@ -25,4 +25,14 @@ describe("Devnet tests", () => {
       cy.get('[data-test="tx-hash"]').contains(txReceipt.hash);
     });
   });
+  it("Loads a block page by hash", () => {
+    cy.sendTx({
+      to: "0x67b1d87101671b127f5f8714789C7192f7ad340e",
+    }).then(({ txReceipt }) => {
+      cy.visit("/block/" + txReceipt.blockHash);
+      cy.get('[data-test="block-height-text"]', { timeout: 10_000 }).contains(
+        txReceipt.blockNumber.toString(),
+      );
+    });
+  });
 });
