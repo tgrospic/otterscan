@@ -10,7 +10,7 @@ jobs:
   autofix:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
@@ -20,4 +20,4 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec prettier --write .
 
-      - uses: autofix-ci/action@635ffb0c9798bd160680f18fd73371e355b85f27
+      - uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a
